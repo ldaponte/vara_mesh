@@ -13,7 +13,7 @@ k.start()
 
 c = ax25.Control(frame_type=ax25.FrameType.UI, poll_final=False, recv_seqno=0, send_seqno=0)
 # message = bytearray('how now brown cow?', encoding='ascii')
-message = bytearray('x' * 1000, encoding='ascii')
+message = bytearray('x' * 256, encoding='ascii')
 # f = ax25.Frame(dst='N7BCP-5', src='N7BCP-6', data=message, control=c)
 f = ax25.Frame(dst='N7BCP-5', src='N7BCP-6', data=message, control=c)
 
