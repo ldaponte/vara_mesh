@@ -1,8 +1,6 @@
 
 import ax25
 import kiss
-import socket
-import keyboard
 
 host = 'localhost'
 kiss_port = 8100
