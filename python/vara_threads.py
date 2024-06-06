@@ -1,6 +1,8 @@
 import ax25
 import kiss
 import threading
+import random
+import time
 
 host = 'localhost'
 kiss_port = 8100
@@ -8,6 +10,10 @@ kiss_port = 8100
 rx_queue = []
 
 first = True
+
+max_sleep = 5
+
+lock = threading.Lock()
 
 k = kiss.TCPKISS(host, kiss_port)
 
@@ -32,24 +38,28 @@ def receive_process(parameter):
 
 def transmit_process(parameter):
 
-    if parameter not in rx_queue:
+    with lock:
 
-        rx_queue.append(parameter)
+        if parameter not in rx_queue:
 
-        c = ax25.Control(frame_type=ax25.FrameType.UI, poll_final=False, recv_seqno=0, send_seqno=0)
+            sleep_time = time.sleep(random.uniform(1, max_sleep))
+            print('pause before transmit: ' + str(sleep_time) + ' seconds...')
 
-        message_string = ",".join(str(heard) for heard in rx_queue)
-        message = bytearray(message_string, encoding='ascii')
+            time.sleep(sleep_time)
 
-        f = ax25.Frame(dst='APZVA-0', src='N7BCP-6', data=message, control=c)
+            rx_queue.append(parameter)
 
-        print('\nSending: ' + message_string)
+            c = ax25.Control(frame_type=ax25.FrameType.UI, poll_final=False, recv_seqno=0, send_seqno=0)
 
-        k.write(f)
+            message_string = ",".join(str(heard) for heard in rx_queue)
+            message = bytearray(message_string, encoding='ascii')
 
+            f = ax25.Frame(dst='APZVA-0', src='N7BCP-6', data=message, control=c)
 
-# transmit_thread = threading.Thread(target=transmit_process, args=('randome parameter',))
-# transmit_thread.start()
+            print('\nSending: ' + message_string)
+
+            k.write(f)
+
 
 receive_thread = threading.Thread(target=receive_process, args=('randome parameter',))
 receive_thread.start()
@@ -57,7 +67,6 @@ receive_thread.start()
 if first:
     transmit_process('K7MHJ-1')
 
-# transmit_thread.join()
 receive_thread.join()
 
 print('\nDone')
