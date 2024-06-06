@@ -42,7 +42,7 @@ def transmit_process(parameter):
 
         if parameter not in rx_queue:
 
-            sleep_time = time.sleep(random.uniform(1, max_sleep))
+            sleep_time = random.uniform(1, max_sleep)
             print('pause before transmit: ' + str(sleep_time) + ' seconds...')
 
             time.sleep(sleep_time)
