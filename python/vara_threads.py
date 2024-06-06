@@ -3,13 +3,16 @@ import kiss
 import threading
 import random
 import time
+import keyboard
+
+version = 1
 
 host = 'localhost'
 kiss_port = 8100
 
 rx_queue = []
 
-first = True
+exit_app = False
 
 max_sleep = 5
 
@@ -24,6 +27,11 @@ def receive_process(parameter):
     print('\nStarting receive process...')
 
     while True:
+
+        if exit_app:
+            print('\nStopping receive loop...')
+            break
+
         frames = k.read()
 
         if(len(frames) > 0):
@@ -36,7 +44,7 @@ def receive_process(parameter):
 
                 transmit_process(str(f.src))
 
-def transmit_process(parameter):
+def transmit_process(parameter=None):
 
     with lock:
 
@@ -47,7 +55,8 @@ def transmit_process(parameter):
 
             time.sleep(sleep_time)
 
-            rx_queue.append(parameter)
+            if parameter is not None:
+                rx_queue.append(parameter)
 
             c = ax25.Control(frame_type=ax25.FrameType.UI, poll_final=False, recv_seqno=0, send_seqno=0)
 
@@ -64,8 +73,15 @@ def transmit_process(parameter):
 receive_thread = threading.Thread(target=receive_process, args=('randome parameter',))
 receive_thread.start()
 
-if first:
-    transmit_process('K7MHJ-1')
+transmit_process()
+
+while True:
+
+    key = keyboard.read_key()
+
+    if key == 'esc':
+        exit_app = True
+        break
 
 receive_thread.join()
 
