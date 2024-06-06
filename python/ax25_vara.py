@@ -51,7 +51,7 @@ while True:
         print('got a frame')
         frame = frames[0][1:]
         f = ax25.Frame.unpack(frame)
-        print("dst={}, src={}, data={}".format(f.dst, f.src, f.data))
+        print("dst={}, src={}, data={}, control={}".format(f.dst, f.src, f.data, f.control))
 
     # print(len(frames))
 '''
