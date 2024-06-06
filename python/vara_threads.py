@@ -7,6 +7,8 @@ import keyboard
 
 version = 1
 
+my_call = 'N7BCP-5'
+
 host = 'localhost'
 kiss_port = 8100
 
@@ -77,7 +79,7 @@ def transmit_process(parameter=None):
             message_string = ",".join(str(heard) for heard in rx_queue)
             message = bytearray(message_string, encoding='ascii')
 
-            f = ax25.Frame(dst='APZVA-0', src='N7BCP-6', data=message, control=c)
+            f = ax25.Frame(dst='APZVA-0', src=my_call, data=message, control=c)
 
             print('\nSending: ' + message_string)
 
