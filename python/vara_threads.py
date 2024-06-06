@@ -22,6 +22,20 @@ k = kiss.TCPKISS(host, kiss_port)
 
 k.start()
 
+def timer_process():
+
+    while True:
+
+        if exit_app:
+            break
+
+        sleep_time = random.uniform(max_sleep, max_sleep * 2)
+        print('\ntimer pause before calling transmit: ' + str(sleep_time) + ' seconds...')
+
+        time.sleep(sleep_time)
+
+        transmit_process()
+
 def receive_process(parameter):
 
     print('\nStarting receive process...')
@@ -73,7 +87,8 @@ def transmit_process(parameter=None):
 receive_thread = threading.Thread(target=receive_process, args=('randome parameter',))
 receive_thread.start()
 
-transmit_process()
+timer_thread = threading.Thread(target=timer_process)
+timer_thread.start()
 
 while True:
 
@@ -84,5 +99,6 @@ while True:
         break
 
 receive_thread.join()
+timer_thread.join()
 
 print('\nDone')
