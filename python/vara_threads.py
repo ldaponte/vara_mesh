@@ -28,7 +28,7 @@ def receive_process(parameter):
                 f = ax25.Frame.unpack(frame)
                 print("\ndst={}, src={}, data={}, data_size={}, control={}".format(f.dst, f.src, f.data, len(f.data), f.control))
 
-                transmit_process(f.src)
+                transmit_process(str(f.src))
 
 def transmit_process(parameter):
 
